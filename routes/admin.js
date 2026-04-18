@@ -4,6 +4,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const { adminModel } = require('../db');
+const { adminMiddleware } = require('../middlewares/admin');
+const { courseModel } = require('../db');
 
 const adminRouter = Router();
 
@@ -80,10 +82,25 @@ adminRouter.post('/signin', async function (req, res) {
   }
 });
 
-adminRouter.post('/course', function (req, res) {
-  res.json({
-    message: 'create course endpoint',
-  });
+adminRouter.post('/course', adminMiddleware, async function (req, res) {
+  adminId = req.userId;
+
+  const { title, description, price, imageUrl } = req.body;
+
+  try {
+    const course = await courseModel.create({
+      title,
+      description,
+      price,
+      imageUrl,
+      creatorId: adminId,
+    });
+
+    res.status(200).json({ message: 'course created', courseId: course._id });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'something went wrong' });
+  }
 });
 
 adminRouter.put('/course', function (req, res) {
