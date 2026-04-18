@@ -13,7 +13,7 @@ function userMiddleware(req, res, next) {
   try {
     const decoded = jwt.verify(token, process.env.JWT_USER_PASSWORD);
     const { id } = decoded;
-    req.userId = { id };
+    req.userId = id;
     next();
   } catch (error) {
     console.log(error);
