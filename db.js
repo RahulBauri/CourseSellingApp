@@ -25,7 +25,7 @@ const courseSchema = new mongoose.Schema({
   imageUrl: String,
   creatorId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'Admin',
   },
 });
 
@@ -45,5 +45,10 @@ const adminModel = mongoose.model('Admin', adminSchema);
 const courseModel = mongoose.model('Course', courseSchema);
 const purchaseModel = mongoose.model('Purchase', purchaseSchema);
 
-module.exports = { userModel, adminModel, courseModel, purchaseModel };
-module.exports = connectDB;
+module.exports = {
+  connectDB,
+  userModel,
+  adminModel,
+  courseModel,
+  purchaseModel,
+};
