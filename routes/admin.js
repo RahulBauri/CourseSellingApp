@@ -103,16 +103,43 @@ adminRouter.post('/course', adminMiddleware, async function (req, res) {
   }
 });
 
-adminRouter.put('/course', function (req, res) {
-  res.json({
-    message: 'edit course endpoint',
-  });
+adminRouter.put('/course', adminMiddleware, async function (req, res) {
+  const adminId = req.userId;
+
+  const { title, description, price, imageUrl, courseId } = req.body;
+
+  try {
+    const editedCourse = await courseModel.updateOne(
+      {
+        _id: courseId,
+        creatorId: adminId,
+      },
+      {
+        title,
+        description,
+        price,
+        imageUrl,
+      },
+    );
+
+    res.json({ message: 'course updated', courseId });
+  } catch (error) {
+    console.log(error);
+    res.json({ message: 'something went wrong' });
+  }
 });
 
-adminRouter.get('/course/bulk', function (req, res) {
-  res.json({
-    message: 'get all courses endpoint',
-  });
+adminRouter.get('/course/bulk', adminMiddleware, async function (req, res) {
+  const adminId = req.userId;
+  try {
+    const allCourses = await courseModel.find({ creatorId: adminId });
+    res.json({
+      allCourses,
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({ message: 'something went wrong' });
+  }
 });
 
 module.exports = { adminRouter };
