@@ -4,6 +4,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const { userModel } = require('../db');
+const { purchaseModel } = require('../db');
+const { userMiddleware } = require('../middlewares/user');
 
 const userRouter = express.Router();
 
@@ -80,10 +82,16 @@ userRouter.post('/signin', async function (req, res) {
   }
 });
 
-userRouter.get('/purchases', function (req, res) {
-  res.json({
-    message: 'user purchased courses endpoint',
-  });
+userRouter.get('/purchases', userMiddleware, async function (req, res) {
+  const userId = req.userId;
+
+  try {
+    const purchases = await purchaseModel.find({ userId });
+    res.json({ purchases });
+  } catch (error) {
+    console.log(error);
+    res.json({ message: 'something went wrong' });
+  }
 });
 
 module.exports = { userRouter };
