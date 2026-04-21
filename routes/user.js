@@ -3,7 +3,7 @@ const zod = require('zod');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-const { userModel } = require('../db');
+const { userModel, courseModel } = require('../db');
 const { purchaseModel } = require('../db');
 const { userMiddleware } = require('../middlewares/user');
 
@@ -87,7 +87,10 @@ userRouter.get('/purchases', userMiddleware, async function (req, res) {
 
   try {
     const purchases = await purchaseModel.find({ userId });
-    res.json({ purchases });
+    const coursesData = await courseModel.find({
+      _id: purchases.map((x) => x.courseId),
+    });
+    res.json({ purchases, coursesData });
   } catch (error) {
     console.log(error);
     res.json({ message: 'something went wrong' });
