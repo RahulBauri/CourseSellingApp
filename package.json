@@ -10,7 +10,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Only BE, stack - nodejs, express, mongodb, js",
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "dotenv": "^17.4.2",
